@@ -1,4 +1,4 @@
-from src.app_functions import *
+from app_functions import *
 
 st.set_page_config(page_title="PQs Search Engine", layout='wide',page_icon='🔍') 
 
