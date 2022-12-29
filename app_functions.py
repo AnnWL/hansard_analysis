@@ -14,7 +14,7 @@ import textwrap
 import time
 
 # Setting up paths
-data_path = ('../data/')
+data_path = ('data/')
 
 columns = ['idx', 'sitting_date', 'sitting_date_dt', 'asker_name', 'asker_party', 'asker_name_party','Is_PAP', 'asker_parliaments', 'askees','responder_name', 'responder_title', 'responder_name_title','title', 'link', 'ministry', 'question_comment', 'response_content', 'type','theme','question_topic_label']
 
