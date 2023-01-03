@@ -6,6 +6,7 @@ party_acronyms_dict = read_json("party_acronyms_dict.json")
 mp_dict = read_json("mp_dict.json")
 mp_list = ['None']
 mp_list.extend(mp_dict.values())
+res_mp_dict = {v: k for k, v in mp_dict.items()}
 agency_theme_dict = read_json('agency_theme_dict.json')
 theme_topic_dict = read_json('theme_topic_dict.json')
 agency_list = list(agency_theme_dict.keys())
@@ -61,7 +62,7 @@ params_dict['phrase'] = input_container.text_input('Keyword Search')
 params_dict['MP_name_party'] = input_container.selectbox('MP', mp_list)
 
 if params_dict['MP_name_party']!='None':
-    params_dict['MP_name'] = params_dict['MP_name_party'].split('(')[0][:-1]
+    params_dict['MP_name'] = res_mp_dict[params_dict['MP_name_party']]
 
 theme_help = "Too many values? You may wish to impute an agency value first, to get a shortlist of policy themes under the agency's purview."
 topic_help = "You may wish to impute a theme first, to get a list of topics specific to the theme."
