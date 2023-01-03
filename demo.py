@@ -107,7 +107,7 @@ if submit_search:
 
             if params_combi=={'agency'}:            
                 title_val = generate_time_series_title(changed_params)
-                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[~df_slice.Is_PAP].shape[0]>0): 
                     fig_time = time_trend_PAP(df_slice, title_val)
                 else: 
                     fig_time = time_trend(df_slice, title_val)
@@ -133,7 +133,7 @@ if submit_search:
 
             if params_combi== {"phrase"}:             
                 title_val = generate_time_series_title(changed_params)
-                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[~df_slice.Is_PAP].shape[0]>0): 
                     fig_time = time_trend_PAP(df_slice, title_val)
                 else: 
                     fig_time = time_trend(df_slice, title_val)
@@ -162,7 +162,7 @@ if submit_search:
 
             if (params_combi=={'theme'}) or (params_combi=={'theme', 'agency'}):  
                 title_val = generate_time_series_title(changed_params)
-                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[~df_slice.Is_PAP].shape[0]>0): 
                     fig_time = time_trend_PAP(df_slice, title_val)
                 else: 
                     fig_time = time_trend(df_slice, title_val)
@@ -181,7 +181,7 @@ if submit_search:
             if params_combi=={'topic'} or (params_combi=={'topic', 'agency'}) or (params_combi=={'topic', 'agency'})\
             or (params_combi=={'topic', 'theme'}): 
                 title_val = generate_time_series_title(changed_params)
-                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[~df_slice.Is_PAP].shape[0]>0): 
                     fig_time = time_trend_PAP(df_slice, title_val)
                 else: 
                     fig_time = time_trend(df_slice, title_val)
@@ -193,7 +193,7 @@ if submit_search:
 
             if params_combi== {"phrase","agency"}:          
                 title_val = generate_time_series_title(changed_params)
-                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[~df_slice.Is_PAP].shape[0]>0): 
                     fig_time = time_trend_PAP(df_slice, title_val)
                 else: 
                     fig_time = time_trend(df_slice, title_val)
