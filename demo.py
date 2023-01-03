@@ -105,8 +105,11 @@ if submit_search:
             print_output(df_slice,tab_result)
 
             if params_combi=={'agency'}:            
-                title = generate_time_series_title(changed_params)
-                fig_time = time_trend_PAP(df_slice, title)
+                title_val = generate_time_series_title(changed_params)
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                    fig_time = time_trend_PAP(df_slice, title_val)
+                else: 
+                    fig_time = time_trend(df_slice, title_val)
                 tab_stats.pyplot(fig_time)
 
                 tab_stats.markdown('##')
@@ -128,9 +131,12 @@ if submit_search:
                 tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
 
             if params_combi== {"phrase"}:             
-                title = generate_time_series_title(changed_params)
-                fig = time_trend_PAP(df_slice, title)
-                tab_stats.pyplot(fig)
+                title_val = generate_time_series_title(changed_params)
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                    fig_time = time_trend_PAP(df_slice, title_val)
+                else: 
+                    fig_time = time_trend(df_slice, title_val)
+                tab_stats.pyplot(fig_time)
 
                 tab_stats.markdown('##')
 
@@ -154,8 +160,11 @@ if submit_search:
                 tab_stats.pyplot(fig_ministry)
 
             if (params_combi=={'theme'}) or (params_combi=={'theme', 'agency'}):  
-                title = generate_time_series_title(changed_params)
-                fig_time = time_trend_PAP(df_slice, title)
+                title_val = generate_time_series_title(changed_params)
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                    fig_time = time_trend_PAP(df_slice, title_val)
+                else: 
+                    fig_time = time_trend(df_slice, title_val)
                 tab_stats.pyplot(fig_time)
 
                 title_val = 'Most Active MPs'
@@ -170,8 +179,11 @@ if submit_search:
 
             if params_combi=={'topic'} or (params_combi=={'topic', 'agency'}) or (params_combi=={'topic', 'agency'})\
             or (params_combi=={'topic', 'theme'}): 
-                title = generate_time_series_title(changed_params)
-                fig_time = time_trend_PAP(df_slice, title)
+                title_val = generate_time_series_title(changed_params)
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                    fig_time = time_trend_PAP(df_slice, title_val)
+                else: 
+                    fig_time = time_trend(df_slice, title_val)
                 tab_stats.pyplot(fig_time)
 
                 title_val = 'Most Active MPs'
@@ -179,8 +191,11 @@ if submit_search:
                 tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
 
             if params_combi== {"phrase","agency"}:          
-                title = generate_time_series_title(changed_params)
-                fig_time = time_trend_PAP(df_slice, title)
+                title_val = generate_time_series_title(changed_params)
+                if (df_slice[df_slice.Is_PAP].shape[0]>0) & (df_slice[df_slice.Is_PAP].shape[0]>0): 
+                    fig_time = time_trend_PAP(df_slice, title_val)
+                else: 
+                    fig_time = time_trend(df_slice, title_val)
                 tab_stats.pyplot(fig_time)
 
                 tab_stats.markdown('##')
