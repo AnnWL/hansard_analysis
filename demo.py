@@ -36,226 +36,226 @@ params_dict = {
     'time_ref_key':origin_val
 }
 
-if check_password():
+#if check_password():
 
-    #######
-    #Input#
-    #######
-    st.title("🔍 PQs Search Engine")
-    st.markdown("""**_Got an upcoming PQ to staff?_** This tool makes your life as a PQ staffer easier - simply key in information such as the topic of the upcoming PQ and the MP filing the PQ. The PQs Search Engine will surface the relevant information such as the past PQs filed under the topic.""")
+#######
+#Input#
+#######
+st.title("🔍 PQs Search Engine")
+st.markdown("""**_Got an upcoming PQ to staff?_** This tool makes your life as a PQ staffer easier - simply key in information such as the topic of the upcoming PQ and the MP filing the PQ. The PQs Search Engine will surface the relevant information such as the past PQs filed under the topic.""")
 
-    instructions = st.sidebar.container()
-    instructions.markdown("""
-    **Different ways to use this tool**
-    1. Agency Search 
-    2. Keyword/Phrase Search
-    3. MP Search 
-    4. Theme/Topic Search
-    5. Combinations of #1 to #4
-    -----""") 
+instructions = st.sidebar.container()
+instructions.markdown("""
+**Different ways to use this tool**
+1. Agency Search 
+2. Keyword/Phrase Search
+3. MP Search 
+4. Theme/Topic Search
+5. Combinations of #1 to #4
+-----""") 
 
-    input_container = st.sidebar.container()
-    input_container.write('**Input Parameters**')
-    params_dict['agency'] = input_container.selectbox('Agency', agency_list, index = 0, key='agency') 
-    params_dict['phrase'] = input_container.text_input('Keyword Search')
-    params_dict['MP_name_party'] = input_container.selectbox('MP', mp_list)
+input_container = st.sidebar.container()
+input_container.write('**Input Parameters**')
+params_dict['agency'] = input_container.selectbox('Agency', agency_list, index = 0, key='agency') 
+params_dict['phrase'] = input_container.text_input('Keyword Search')
+params_dict['MP_name_party'] = input_container.selectbox('MP', mp_list)
 
-    if params_dict['MP_name_party']!='None':
-        params_dict['MP_name'] = params_dict['MP_name_party'].split('(')[0][:-1]
+if params_dict['MP_name_party']!='None':
+    params_dict['MP_name'] = params_dict['MP_name_party'].split('(')[0][:-1]
 
-    theme_help = "Too many values? You may wish to impute an agency value first, to get a shortlist of policy themes under the agency's purview."
-    topic_help = "You may wish to impute a theme first, to get a list of topics specific to the theme."
+theme_help = "Too many values? You may wish to impute an agency value first, to get a shortlist of policy themes under the agency's purview."
+topic_help = "You may wish to impute a theme first, to get a list of topics specific to the theme."
 
-    if params_dict['agency']!='None': 
-        params_dict['theme'] = input_container.selectbox('Theme', list(agency_theme_dict[params_dict['agency']]))
-    else: 
-        params_dict['theme'] = input_container.selectbox('Theme', theme_list, index = theme_list.index('None'), help = theme_help)
+if params_dict['agency']!='None': 
+    params_dict['theme'] = input_container.selectbox('Theme', list(agency_theme_dict[params_dict['agency']]))
+else: 
+    params_dict['theme'] = input_container.selectbox('Theme', theme_list, index = theme_list.index('None'), help = theme_help)
 
-    if params_dict['theme']!='None': 
-        params_dict['topic'] = input_container.selectbox('Topic', theme_topic_dict[params_dict['theme']])
-    else: 
-        params_dict['topic'] = input_container.selectbox('Topic', topic_list, index = topic_list.index('None'), help = topic_help)
+if params_dict['theme']!='None': 
+    params_dict['topic'] = input_container.selectbox('Topic', theme_topic_dict[params_dict['theme']])
+else: 
+    params_dict['topic'] = input_container.selectbox('Topic', topic_list, index = topic_list.index('None'), help = topic_help)
 
-    params_dict['time_ref_key'] = input_container.selectbox('Look for PQs from the past..', list(time_ref_dict.keys()), index=2)
-    params_dict['reference_date'] = current_date - time_ref_dict[params_dict['time_ref_key']]
-    submit_search = input_container.button('🔍 Search')
-    st.sidebar.markdown("""---""")
-    params_combi, changed_params = get_impute_values(params_dict,origin_val)
+params_dict['time_ref_key'] = input_container.selectbox('Look for PQs from the past..', list(time_ref_dict.keys()), index=2)
+params_dict['reference_date'] = current_date - time_ref_dict[params_dict['time_ref_key']]
+submit_search = input_container.button('🔍 Search')
+st.sidebar.markdown("""---""")
+params_combi, changed_params = get_impute_values(params_dict,origin_val)
 
-    ########
-    #Output#
-    ########
-    if submit_search: 
+########
+#Output#
+########
+if submit_search: 
 
-        output_container = st.container()
-        output_container.subheader("RESULTS")
-        df_slice =  get_df_slice(df, params_dict)
+    output_container = st.container()
+    output_container.subheader("RESULTS")
+    df_slice =  get_df_slice(df, params_dict)
 
-        summary_str = generate_summary_string(df_slice.shape[0], changed_params)
-        output_container.write(summary_str) 
+    summary_str = generate_summary_string(df_slice.shape[0], changed_params)
+    output_container.write(summary_str) 
 
-        if df_slice.shape[0]>0: 
-            generate_folder(df_slice, changed_params) #this takes around 2 secs
+    if df_slice.shape[0]>0: 
+        generate_folder(df_slice, changed_params) #this takes around 2 secs
 
-            if len(params_combi)>=3:
-                print_output(df_slice,output_container)
+        if len(params_combi)>=3:
+            print_output(df_slice,output_container)
 
-            else:
-                tab_stats, tab_result = output_container.tabs(['Summary Statistics', 'Search Results'])
-                print_output(df_slice,tab_result)
+        else:
+            tab_stats, tab_result = output_container.tabs(['Summary Statistics', 'Search Results'])
+            print_output(df_slice,tab_result)
 
-                if params_combi=={'agency'}:            
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend_PAP(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if params_combi=={'agency'}:            
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend_PAP(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Active MPs'
-                    parameter = 'asker_name'
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
+                title_val = 'Most Active MPs'
+                parameter = 'asker_name'
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Popular Themes' 
-                    parameter = 'theme'
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
+                title_val = 'Most Popular Themes' 
+                parameter = 'theme'
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Popular Topics' 
-                    parameter = 'question_topic_label' 
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
+                title_val = 'Most Popular Topics' 
+                parameter = 'question_topic_label' 
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
 
-                if params_combi== {"phrase"}:             
-                    title = generate_time_series_title(changed_params)
-                    fig = time_trend_PAP(df_slice, title)
-                    tab_stats.pyplot(fig)
+            if params_combi== {"phrase"}:             
+                title = generate_time_series_title(changed_params)
+                fig = time_trend_PAP(df_slice, title)
+                tab_stats.pyplot(fig)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = "Top Ministries"
-                    fig_ministry = bar_chart(df_slice, 'ministry', title_val)
-                    tab_stats.pyplot(fig_ministry)
+                title_val = "Top Ministries"
+                fig_ministry = bar_chart(df_slice, 'ministry', title_val)
+                tab_stats.pyplot(fig_ministry)
 
-                    title_val = 'Most Active MPs'
-                    fig = bar_chart(df_slice, 'asker_name', title_val)
-                    tab_stats.pyplot(fig)
+                title_val = 'Most Active MPs'
+                fig = bar_chart(df_slice, 'asker_name', title_val)
+                tab_stats.pyplot(fig)
 
-                if params_combi== {"MP_name"}:             
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if params_combi== {"MP_name"}:             
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = "Top Ministries"
-                    fig_ministry = bar_chart(df_slice, 'ministry', title_val)
-                    tab_stats.pyplot(fig_ministry)
+                title_val = "Top Ministries"
+                fig_ministry = bar_chart(df_slice, 'ministry', title_val)
+                tab_stats.pyplot(fig_ministry)
 
-                if (params_combi=={'theme'}) or (params_combi=={'theme', 'agency'}):  
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend_PAP(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if (params_combi=={'theme'}) or (params_combi=={'theme', 'agency'}):  
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend_PAP(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    title_val = 'Most Active MPs'
-                    parameter = 'asker_name'
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
+                title_val = 'Most Active MPs'
+                parameter = 'asker_name'
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Popular Topics' 
-                    parameter = 'question_topic_label' 
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
+                title_val = 'Most Popular Topics' 
+                parameter = 'question_topic_label' 
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
 
-                if params_combi=={'topic'} or (params_combi=={'topic', 'agency'}) or (params_combi=={'topic', 'agency'})\
-                or (params_combi=={'topic', 'theme'}): 
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend_PAP(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if params_combi=={'topic'} or (params_combi=={'topic', 'agency'}) or (params_combi=={'topic', 'agency'})\
+            or (params_combi=={'topic', 'theme'}): 
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend_PAP(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    title_val = 'Most Active MPs'
-                    parameter = 'asker_name'
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
+                title_val = 'Most Active MPs'
+                parameter = 'asker_name'
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
 
-                if params_combi== {"phrase","agency"}:          
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend_PAP(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if params_combi== {"phrase","agency"}:          
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend_PAP(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Active MPs'
-                    parameter = 'asker_name'
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
+                title_val = 'Most Active MPs'
+                parameter = 'asker_name'
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
 
-                if params_combi=={'MP_name', 'agency'}:
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if params_combi=={'MP_name', 'agency'}:
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Popular Themes' 
-                    parameter = 'theme'
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))   
+                title_val = 'Most Popular Themes' 
+                parameter = 'theme'
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))   
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Popular Topics' 
-                    parameter = 'question_topic_label' 
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
+                title_val = 'Most Popular Topics' 
+                parameter = 'question_topic_label' 
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
 
-                if params_combi=={'MP_name', 'phrase'}:
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if params_combi=={'MP_name', 'phrase'}:
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = "Top Ministries"
-                    fig_ministry = bar_chart(df_slice, 'ministry', title_val)
-                    tab_stats.pyplot(fig_ministry)
+                title_val = "Top Ministries"
+                fig_ministry = bar_chart(df_slice, 'ministry', title_val)
+                tab_stats.pyplot(fig_ministry)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Popular Themes' 
-                    parameter = 'theme'
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))   
+                title_val = 'Most Popular Themes' 
+                parameter = 'theme'
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))   
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Popular Topics' 
-                    parameter = 'question_topic_label' 
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
+                title_val = 'Most Popular Topics' 
+                parameter = 'question_topic_label' 
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val)) 
 
-                if (params_combi=={'phrase', 'theme'}) or (params_combi=={'phrase', 'topic'}):
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if (params_combi=={'phrase', 'theme'}) or (params_combi=={'phrase', 'topic'}):
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = "Top Ministries"
-                    fig_ministry = bar_chart(df_slice, 'ministry', title_val)
-                    tab_stats.pyplot(fig_ministry)
+                title_val = "Top Ministries"
+                fig_ministry = bar_chart(df_slice, 'ministry', title_val)
+                tab_stats.pyplot(fig_ministry)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = 'Most Active MPs'
-                    parameter = 'asker_name'
-                    tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
+                title_val = 'Most Active MPs'
+                parameter = 'asker_name'
+                tab_stats.pyplot(bar_chart(df_slice, parameter, title_val))
 
-                if (params_combi=={'theme', 'MP_name'}) or (params_combi=={'topic', 'MP_name'}):   
-                    title = generate_time_series_title(changed_params)
-                    fig_time = time_trend(df_slice, title)
-                    tab_stats.pyplot(fig_time)
+            if (params_combi=={'theme', 'MP_name'}) or (params_combi=={'topic', 'MP_name'}):   
+                title = generate_time_series_title(changed_params)
+                fig_time = time_trend(df_slice, title)
+                tab_stats.pyplot(fig_time)
 
-                    tab_stats.markdown('##')
+                tab_stats.markdown('##')
 
-                    title_val = "Top Ministries"
-                    fig_ministry = bar_chart(df_slice, 'ministry', title_val)
-                    tab_stats.pyplot(fig_ministry)
+                title_val = "Top Ministries"
+                fig_ministry = bar_chart(df_slice, 'ministry', title_val)
+                tab_stats.pyplot(fig_ministry)
 
 
 
