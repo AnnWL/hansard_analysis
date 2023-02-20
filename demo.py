@@ -14,13 +14,13 @@ theme_list = ['None']
 theme_list.extend(list(theme_topic_dict.keys()))
 topic_list = ['None'] 
 for topics in theme_topic_dict.values(): topic_list.extend(topics)
-topic_list = sorted(topic_list)
+topic_list = sorted(list(set(topic_list)))
 
 time_ref_dict = {'3 months': datetime.timedelta(days = 90),'1 year':  datetime.timedelta(days = 365),\
                  '3 years': datetime.timedelta(days = 1096), '5 years': datetime.timedelta(days = 1826)}
 
 overall_df_file = 'pqs_12_to_14_23Nov.csv'
-df_topic_file = 'social_sector_classification_291222.csv'
+df_topic_file = 'social_sector_classification_200223.csv'
 df = df_merge(overall_df_file, df_topic_file, party_acronyms_dict, columns)
 
 current_date = datetime.datetime.strptime('1-8-2022','%d-%m-%Y')
@@ -42,8 +42,8 @@ params_dict = {
 #######
 #Input#
 #######
-st.title("🔍 PQs Search Engine")
-st.markdown("""**_Got an upcoming PQ to staff?_** This tool makes your life as a PQ staffer easier - simply key in information such as the topic of the upcoming PQ and the MP filing the PQ. The PQs Search Engine will surface the relevant information such as the past PQs filed under the topic.""")
+st.title("🔍 Hansard Analysis Tool Prototype")
+st.markdown("""**_Got an upcoming PQ to staff?_** This tool makes your life as a PQ staffer easier - simply key in information such as the topic of the upcoming PQ and the MP filing the PQ. The Hansard Analysis Tool will surface the relevant information such as the past PQs filed under the topic.""")
 
 instructions = st.sidebar.container()
 instructions.markdown("""
