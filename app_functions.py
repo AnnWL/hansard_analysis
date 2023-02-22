@@ -56,6 +56,7 @@ def save_json(json_obj, file_name):
         json.dump(json_obj, outfile)
     return 
 
+@st.experimental_memo
 def df_merge(overall_df_file, df_topic_file, party_acronyms_dict, columns): 
     df_all = pd.read_csv(data_path + overall_df_file)
     df_topic = pd.read_csv(data_path+df_topic_file)
@@ -63,11 +64,16 @@ def df_merge(overall_df_file, df_topic_file, party_acronyms_dict, columns):
     
     df.insert(3, 'asker_name_party', df.loc[:,'asker_name']+' ('+ df['asker_party'].\
                apply(lambda x:party_acronyms_dict[x])+')')
+    
     df.insert(4,'Is_PAP', df.loc[:,'asker_party'].str.contains("People's Action Party"))
     df.fillna('',inplace = True)
+    
     df['sitting_date_dt'] = pd.to_datetime(df['sitting_date'])
+    
     df = df[df.sitting_date>='2018-01-01'].copy()
+    
     df['responder_name_title'] = df['responder_name'] + ', ' + df['responder_title']
+    
     return df[columns]
 
 ########
@@ -96,6 +102,7 @@ def print_output(output_df, container):
         container.markdown(PQ_string)
     return
 
+@st.experimental_memo
 def get_df_slice(df, params_dict):
     """Returns the sliced data according to users' impute parameters."""
     df_slice = df[df.sitting_date_dt > params_dict['reference_date']].copy()
@@ -308,16 +315,15 @@ def generate_folder(output_df, changed_params):
     
     make_archive(output_directory, output_directory+'.zip')
     
-    output_container = st.sidebar.container()
-    output_container.write('**Output**')
+    #output_container = st.sidebar.container()
+    #output_container.write('**Output**')
     
-    with open(output_directory+'.zip', "rb") as fp:
-        btn = output_container.download_button(
-            label="Download Background Briefs",
-            data=fp,
-            file_name=folder_name_val+".zip",
-            mime="application/zip")
+    #with open(output_directory+'.zip', "rb") as fp:
+    #    btn = output_container.download_button(
+    #        label="Download Background Briefs",
+    #        data=fp,
+    #        file_name=folder_name_val+".zip",
+    #        mime="application/zip")
         
-    shutil.rmtree(output_directory)
        
-    return
+    return output_directory

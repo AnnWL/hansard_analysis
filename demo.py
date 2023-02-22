@@ -1,4 +1,5 @@
 from app_functions import *
+import time
 
 st.set_page_config(page_title="PQs Search Engine", layout='wide',page_icon='🔍') 
 
@@ -38,6 +39,7 @@ params_dict = {
 }
 
 #if check_password():
+
 
 #######
 #Input#
@@ -83,27 +85,35 @@ submit_search = input_container.button('🔍 Search')
 st.sidebar.markdown("""---""")
 params_combi, changed_params = get_impute_values(params_dict,origin_val)
 
+if st.session_state.get('submit_search_button') != True:
+    st.session_state['submit_search_button'] = submit_search
+
 ########
 #Output#
 ########
-if submit_search: 
 
-    output_container = st.container()
-    output_container.subheader("RESULTS")
+if st.session_state["submit_search_button"]: 
+
+    output_container1 = st.container()
+    output_container1.subheader("RESULTS")
     df_slice =  get_df_slice(df, params_dict)
 
     summary_str = generate_summary_string(df_slice.shape[0], changed_params)
-    output_container.write(summary_str) 
+    output_container1.write(summary_str) 
 
     if df_slice.shape[0]>0: 
-        generate_folder(df_slice, changed_params) #this takes around 2 secs
-
+        #generate_folder(df_slice, changed_params) #this takes around 2 secs
+        gen_brief = output_container1.checkbox('Export these PQs')
+        output_container2 = st.container()
         if len(params_combi)>=3:
-            print_output(df_slice,output_container)
+            print_output(df_slice,output_container2)
 
         else:
-            tab_stats, tab_result = output_container.tabs(['Summary Statistics', 'Search Results'])
+
+            tab_stats, tab_result = output_container2.tabs(['Summary Statistics', 'Search Results'])
+            
             print_output(df_slice,tab_result)
+            
 
             if params_combi=={'agency'}:            
                 title_val = generate_time_series_title(changed_params)
@@ -272,6 +282,27 @@ if submit_search:
                 title_val = "Top Ministries"
                 fig_ministry = bar_chart(df_slice, 'ministry', title_val)
                 tab_stats.pyplot(fig_ministry)
+        
+        if gen_brief: 
+            with output_container1:
+                with st.spinner('Exporting PQs...'):
+                    output_directory = generate_folder(df_slice, changed_params)
+                    with open(output_directory+'.zip', "rb") as fp:
+                        folder_name_val = output_directory.split('/')[-1]
+                        btn = st.download_button(
+                            label="Download Background Briefs",
+                            data=fp,
+                            file_name=folder_name_val+".zip",
+                            mime="application/zip")
+                        
+                    if os.path.exists(output_directory+'.zip'):
+                        os.remove(output_directory+'.zip')
+                        shutil.rmtree(output_directory)
+                
+               
+
+                
+            
 
 
 
