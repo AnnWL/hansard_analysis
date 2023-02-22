@@ -1,7 +1,6 @@
 from app_functions import *
-import time
 
-st.set_page_config(page_title="PQs Search Engine", layout='wide',page_icon='🔍') 
+st.set_page_config(page_title="Hansard Analysis Tool", layout='wide',page_icon='🔍') 
 
 party_acronyms_dict = read_json("party_acronyms_dict.json")
 mp_dict = read_json("mp_dict.json")
@@ -20,11 +19,11 @@ topic_list = sorted(list(set(topic_list)))
 time_ref_dict = {'3 months': datetime.timedelta(days = 90),'1 year':  datetime.timedelta(days = 365),\
                  '3 years': datetime.timedelta(days = 1096), '5 years': datetime.timedelta(days = 1826)}
 
-overall_df_file = 'pqs_12_to_14_23Nov.csv'
-df_topic_file = 'social_sector_classification_200223.csv'
+overall_df_file = 'pqs_12_to_14.csv'
+df_topic_file = 'social_sector_classification_layer2_Feb23.csv'
 df = df_merge(overall_df_file, df_topic_file, party_acronyms_dict, columns)
 
-current_date = datetime.datetime.strptime('1-8-2022','%d-%m-%Y')
+current_date = datetime.datetime.strptime('1-2-2023','%d-%m-%Y')
 origin_val = 'None'
 submit_search = False
 
@@ -37,9 +36,6 @@ params_dict = {
     'MP_name': origin_val,
     'time_ref_key':origin_val
 }
-
-#if check_password():
-
 
 #######
 #Input#
