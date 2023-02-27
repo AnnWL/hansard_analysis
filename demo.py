@@ -19,8 +19,8 @@ topic_list = sorted(list(set(topic_list)))
 time_ref_dict = {'3 months': datetime.timedelta(days = 90),'1 year':  datetime.timedelta(days = 365),\
                  '3 years': datetime.timedelta(days = 1096), '5 years': datetime.timedelta(days = 1826)}
 
-overall_df_file = 'pqs_12_to_14.csv'
-df_topic_file = 'social_sector_classification_layer2_Feb23.csv'
+overall_df_file = 'pqs_240223.csv'
+df_topic_file = 'social_sector_classification_layer2_27022023.csv'
 df = df_merge(overall_df_file, df_topic_file, party_acronyms_dict, columns)
 
 current_date = datetime.datetime.strptime('1-2-2023','%d-%m-%Y')

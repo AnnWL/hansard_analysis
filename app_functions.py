@@ -12,7 +12,7 @@ from matplotlib.dates import AutoDateLocator, AutoDateFormatter, date2num, DateF
 import matplotlib.dates as mdates
 import textwrap
 import time
-
+import re
 # Setting up paths
 data_path = ('data/')
 
@@ -102,14 +102,20 @@ def print_output(output_df, container):
         container.markdown(PQ_string)
     return
 
+def remove_special_chars(text):
+    # Replace special characters with a space
+    return re.sub(r'[^\w\s]', ' ', text)
+
 @st.experimental_memo
 def get_df_slice(df, params_dict):
     """Returns the sliced data according to users' impute parameters."""
     df_slice = df[df.sitting_date_dt > params_dict['reference_date']].copy()
     
+    df_slice['question_comment_no_special_char'] = df_slice['question_comment'].apply(remove_special_chars)
+    
     if params_dict['phrase'] != '': 
-        df_slice = df_slice[df_slice.question_comment.str.lower().str.contains(' '+ params_dict['phrase'].lower() +' ',\
-                                                                               regex = False)]
+        df_slice = df_slice[df_slice.question_comment_no_special_char.str.lower().str.contains(' '+\
+                           params_dict['phrase'].lower() +' ',regex = False)]
     if params_dict['agency'] != 'None':
         df_slice = df_slice[df_slice.ministry == params_dict['agency']]
     
