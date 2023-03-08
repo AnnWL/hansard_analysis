@@ -17,7 +17,8 @@ for topics in theme_topic_dict.values(): topic_list.extend(topics)
 topic_list = sorted(list(set(topic_list)))
 
 time_ref_dict = {'3 months': datetime.timedelta(days = 90),'1 year':  datetime.timedelta(days = 365),\
-                 '3 years': datetime.timedelta(days = 1096), '5 years': datetime.timedelta(days = 1826)}
+                 '3 years': datetime.timedelta(days = 1096), '5 years': datetime.timedelta(days = 1826), 
+                 '10 years': datetime.timedelta(days = 3650)}
 
 overall_df_file = 'pqs_240223.csv'
 df_topic_file = 'social_sector_classification_layer2_27022023.csv'
@@ -98,7 +99,6 @@ if st.session_state["submit_search_button"]:
     output_container1.write(summary_str) 
 
     if df_slice.shape[0]>0: 
-        #generate_folder(df_slice, changed_params) #this takes around 2 secs
         gen_brief = output_container1.checkbox('Export these PQs')
         output_container2 = st.container()
         if len(params_combi)>=3:

@@ -70,8 +70,7 @@ def df_merge(overall_df_file, df_topic_file, party_acronyms_dict, columns):
     
     df['sitting_date_dt'] = pd.to_datetime(df['sitting_date'])
     
-    df = df[df.sitting_date>='2018-01-01'].copy()
-    
+    #df = df[df.sitting_date>='2018-01-01'].copy()
     df['responder_name_title'] = df['responder_name'] + ', ' + df['responder_title']
     
     return df[columns]
@@ -320,16 +319,5 @@ def generate_folder(output_df, changed_params):
         doc.save(folder_name_val+'/'+title)
     
     make_archive(output_directory, output_directory+'.zip')
-    
-    #output_container = st.sidebar.container()
-    #output_container.write('**Output**')
-    
-    #with open(output_directory+'.zip', "rb") as fp:
-    #    btn = output_container.download_button(
-    #        label="Download Background Briefs",
-    #        data=fp,
-    #        file_name=folder_name_val+".zip",
-    #        mime="application/zip")
-        
        
     return output_directory
